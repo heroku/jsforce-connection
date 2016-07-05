@@ -9,6 +9,7 @@
   "author": "ntblack",
   "license": "MIT",
   "dependencies": {
-    "jsforce": "1.6.5"
+    "jsforce": "1.6.5",
+    "node-fetch": "1.5.3"
   }
 }
