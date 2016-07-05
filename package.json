@@ -1,0 +1,11 @@
+{
+  "name": "jsforce-connection",
+  "version": "1.0.0",
+  "description": "Configures jsforce connection",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ntblack",
+  "license": "MIT"
+}
