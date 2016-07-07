@@ -1,37 +1,46 @@
-const url = require('url');
+const urlParse = require('url').parse;
 const jsforce = require('jsforce');
 const requireEnvVar = require('./require-env-var');
 const refreshSalesforceAuth = require('./refresh-salesforce-auth');
 const getSalesforceIdentity = require('./get-salesforce-identity');
 
-// Return Promise of authenticated jsForce connection.
-module.exports = function createJsforceConnection(forceComVersion = '37.0') {
-
-  const forceComAlmUrl = url.parse(requireEnvVar('SALESFORCE_URL'));
+const configFromUrl = function(url) {
+  const forceComAlmUrl = urlParse(url);
   const forceComAuth = forceComAlmUrl.auth.split(':');
-  const forceComId = forceComAuth[0];
-  const forceComSecret = forceComAuth[1];
-  const forceComRefreshToken = forceComAuth[2];
-  const forceComHost = forceComAlmUrl.host;
-  const forceComUrl = `https://${forceComHost}`;
+  return {
+    clientId : forceComAuth[0],
+    clientSecret : forceComAuth[1],
+    refreshToken : forceComAuth[2],
+    instanceUrl : `https://${forceComAlmUrl.host}`
+  };
+};
 
-  console.log('-----> Force.com connecting', forceComUrl);
+const connection = function() {
+  return connectionFromUrl(requireEnvVar('SALESFORCE_URL'));
+};
+
+const connectionFromUrl = function(url) {
+  return connectionFromConfig(configFromUrl(url));
+};
+
+// Return Promise of authenticated jsForce connection.
+const connectionFromConfig = function(config, forceComVersion = '37.0') {
+
+  console.log('-----> Force.com connecting', config.instanceUrl);
 
   // Dynamic assignments with top-level scope
   let forceComAuthToken;
-  let forceComUserId;
-  let forceComUsername;
 
   let connection;
 
-  return refreshSalesforceAuth(forceComHost, forceComId, forceComSecret, forceComRefreshToken)
+  return refreshSalesforceAuth(config)
     .then( ({accessToken, idUrl}) => {
       forceComAuthToken = accessToken;
       connection = new jsforce.Connection({
         accessToken: accessToken,
-        loginUrl: forceComUrl,
-        instanceUrl: forceComUrl,
-        serverUrl: `${forceComUrl}/services/Soap/u/${forceComVersion}`,
+        loginUrl: config.instanceUrl,
+        instanceUrl: config.instanceUrl,
+        serverUrl: `${config.instanceUrl}/services/Soap/u/${forceComVersion}`,
         version: forceComVersion
       });
       return getSalesforceIdentity(accessToken, idUrl);
@@ -43,4 +52,11 @@ module.exports = function createJsforceConnection(forceComVersion = '37.0') {
       return connection;
     });
 
-}
+};
+
+module.exports = {
+  configFromUrl,
+  connection,
+  connectionFromUrl,
+  connectionFromConfig
+};

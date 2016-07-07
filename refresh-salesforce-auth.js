@@ -1,15 +1,15 @@
 const url = require('url');
 const fetch = require('node-fetch');
 
-module.exports = function refreshSalesforceAuth(forceComHost, forceComId, forceComSecret, forceComRefreshToken) {
-  if (forceComHost == null || forceComId == null || forceComSecret == null || forceComRefreshToken == null) {
-    throw new Error('Requires arguments `forceComHost, forceComId, forceComSecret, forceComRefreshToken`');
+module.exports = function refreshSalesforceAuth(config) {
+  if (config.instanceUrl == null || config.clientId == null || config.clientSecret == null || config.refreshToken == null) {
+    throw new Error('Requires arguments `instanceUrl, clientId, clientSecret, refreshToken`');
   }
   const query = `grant_type=refresh_token&client_id=${
-    encodeURIComponent(forceComId)}&client_secret=${
-    encodeURIComponent(forceComSecret)}&refresh_token=${
-    encodeURIComponent(forceComRefreshToken)}`;
-  const refreshAuthUrl = `https://${forceComHost}/services/oauth2/token?${query}`;
+    encodeURIComponent(config.clientId)}&client_secret=${
+    encodeURIComponent(config.clientSecret)}&refresh_token=${
+    encodeURIComponent(config.refreshToken)}`;
+  const refreshAuthUrl = `${config.instanceUrl}/services/oauth2/token?${query}`;
 
   console.log('-----> Refresh Salesforce auth');
   return fetch(refreshAuthUrl, {
@@ -27,7 +27,7 @@ module.exports = function refreshSalesforceAuth(forceComHost, forceComId, forceC
     .then( salesforceAuth => {
       // Reset the identity URL to the specified instance host, otherwise Salesforce always uses "login.salesforce.com"
       const salesforceIdentityUrl = url.parse(salesforceAuth.id);
-      salesforceIdentityUrl.host = forceComHost;
+      salesforceIdentityUrl.host = url.parse(config.instanceUrl).host;
       const idUrl = url.format(salesforceIdentityUrl);
       //console.log(`       instance identity URL ${idUrl}`);
       return {
@@ -35,4 +35,4 @@ module.exports = function refreshSalesforceAuth(forceComHost, forceComId, forceC
         idUrl
       }
     });
-}
+};
