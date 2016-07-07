@@ -37,7 +37,7 @@ const connectionFromConfig = function(config, forceComVersion = '37.0') {
     .then( ({accessToken, idUrl}) => {
       forceComAuthToken = accessToken;
       connection = new jsforce.Connection({
-        accessToken: config.accessToken,
+        accessToken: accessToken,
         loginUrl: config.instanceUrl,
         instanceUrl: config.instanceUrl,
         serverUrl: `${config.instanceUrl}/services/Soap/u/${forceComVersion}`,
@@ -55,6 +55,7 @@ const connectionFromConfig = function(config, forceComVersion = '37.0') {
 };
 
 module.exports = {
+  configFromUrl,
   connection,
   connectionFromUrl,
   connectionFromConfig
