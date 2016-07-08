@@ -15,6 +15,10 @@ const configFromUrl = function(url) {
   };
 };
 
+const urlFromConfig = function(config) {
+  return `force://${config.clientId}:${config.clientSecret}:${config.refreshToken}@${config.instanceUrl}`
+};
+
 const connection = function() {
   return connectionFromUrl(requireEnvVar('SALESFORCE_URL'));
 };
@@ -58,5 +62,6 @@ module.exports = {
   configFromUrl,
   connection,
   connectionFromUrl,
-  connectionFromConfig
+  connectionFromConfig,
+  urlFromConfig
 };
