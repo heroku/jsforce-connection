@@ -59,6 +59,7 @@ function connectionFromConfig(config, forceComVersion = '37.0') {
 };
 
 module.exports = {
+  default: connection,
   configFromUrl,
   connection,
   connectionFromUrl,
