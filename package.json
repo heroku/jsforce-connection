@@ -1,7 +1,7 @@
 {
   "name": "jsforce-connection",
-  "version": "1.0.0",
-  "description": "Configures jsforce connection",
+  "version": "2.0.0",
+  "description": "Create an instantly reliable jsforce connection",
   "main": "index.js",
   "scripts": {
     "test": "`npm bin`/ava **/*-test.js"
