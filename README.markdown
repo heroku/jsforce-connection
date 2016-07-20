@@ -2,6 +2,8 @@ jsforce-connection
 ==================
 Create an instantly reliable jsforce connection.
 
+[![Build Status](https://travis-ci.org/heroku/jsforce-connection.svg?branch=master)](https://travis-ci.org/heroku/jsforce-connection)
+
 Get a promise for an authenticated [jsforce](https://jsforce.github.io) connection based on the `SALESFORCE_URL` env variable or config JSON.
 
 Exclusively uses the user account's Salesforce instance URL, e.g. `https://na30.salesforce.com`, to avoid race conditions with replication to the centralized login service, e.g. `htttps://login.salesforce.com`.
