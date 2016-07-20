@@ -20,12 +20,12 @@ function urlFromConfig(config) {
   return `force://${config.clientId}:${config.clientSecret}:${config.refreshToken}@${config.instanceUrl}`
 };
 
-function connection() {
-  return connectionFromUrl(requireEnvVar('SALESFORCE_URL'));
+function connection(forceComVersion) {
+  return connectionFromUrl(requireEnvVar('SALESFORCE_URL'), forceComVersion);
 };
 
-function connectionFromUrl(url) {
-  return connectionFromConfig(configFromUrl(url));
+function connectionFromUrl(url, forceComVersion) {
+  return connectionFromConfig(configFromUrl(url), forceComVersion);
 };
 
 // Return Promise of authenticated jsForce connection.
