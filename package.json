@@ -4,12 +4,18 @@
   "description": "Configures jsforce connection",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "`npm bin`/ava **/*-test.js"
   },
   "author": "ntblack",
   "license": "MIT",
   "dependencies": {
-    "jsforce": "1.6.5",
     "node-fetch": "1.5.3"
+  },
+  "peerDependencies": {
+    "jsforce": "^1.6.0"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "nock": "^8.0.0"
   }
 }
