@@ -4,6 +4,6 @@ module.exports = function requireEnvVar(name) {
   if (value != null) {
     return value;
   } else {
-    throw new Error(`!      Environment variable "${name}" is required`);
+    throw new Error(`Environment variable "${name}" is required`);
   }
 }

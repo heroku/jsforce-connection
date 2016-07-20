@@ -1,7 +1,7 @@
 const url = require('url');
 const fetch = require('node-fetch');
 
-module.exports = function refreshSalesforceAuth(config) {
+module.exports = function refreshSalesforceAuth(config, logger) {
   if (config.instanceUrl == null || config.clientId == null || config.clientSecret == null || config.refreshToken == null) {
     throw new Error('Requires arguments `instanceUrl, clientId, clientSecret, refreshToken`');
   }
@@ -11,7 +11,7 @@ module.exports = function refreshSalesforceAuth(config) {
     encodeURIComponent(config.refreshToken)}`;
   const refreshAuthUrl = `${config.instanceUrl}/services/oauth2/token?${query}`;
 
-  console.log('-----> Refresh Salesforce auth');
+  logger('-----> Refresh Salesforce auth');
   return fetch(refreshAuthUrl, {
       method: 'POST',
       headers: {
@@ -21,7 +21,7 @@ module.exports = function refreshSalesforceAuth(config) {
     .then( response => {
       const status = response.status;
       if (status >= 300) { throw new Error(`Request status ${status} for ${refreshAuthUrl}`) }
-      //console.log('       response status', status);
+      //logger('       response status', status);
       return response.json();
     })
     .then( salesforceAuth => {
@@ -29,7 +29,7 @@ module.exports = function refreshSalesforceAuth(config) {
       const salesforceIdentityUrl = url.parse(salesforceAuth.id);
       salesforceIdentityUrl.host = url.parse(config.instanceUrl).host;
       const idUrl = url.format(salesforceIdentityUrl);
-      //console.log(`       instance identity URL ${idUrl}`);
+      //logger(`       instance identity URL ${idUrl}`);
       return {
         accessToken: salesforceAuth.access_token,
         idUrl

@@ -3,6 +3,7 @@ const jsforce = require('jsforce');
 const requireEnvVar = require('./require-env-var');
 const refreshSalesforceAuth = require('./refresh-salesforce-auth');
 const getSalesforceIdentity = require('./get-salesforce-identity');
+const loggers = require('./loggers');
 
 function configFromUrl(url) {
   const forceComAlmUrl = urlParse(url);
@@ -29,31 +30,39 @@ function connectionFromUrl(url) {
 
 // Return Promise of authenticated jsForce connection.
 function connectionFromConfig(config, forceComVersion = '37.0') {
+  const env = process.env;
+  let logger;
+  if (env.VERBOSE === true || env.VERBOSE === 'true' || env.VERBOSE === '1') {
+    // Log stream should not be mixed with stdout,
+    // where output is written for some apps.
+    logger = loggers.verbose;
+  } else {
+    logger = loggers.default;
+  }
 
-  console.log('-----> Force.com connecting', config.instanceUrl);
+  logger('-----> Force.com connecting', config.instanceUrl);
 
   // Dynamic assignments with top-level scope
   let forceComAuthToken;
+  let newConnection;
 
-  let connection;
-
-  return refreshSalesforceAuth(config)
+  return refreshSalesforceAuth(config, logger)
     .then( ({accessToken, idUrl}) => {
       forceComAuthToken = accessToken;
-      connection = new jsforce.Connection({
+      newConnection = new jsforce.Connection({
         accessToken: accessToken,
         loginUrl: config.instanceUrl,
         instanceUrl: config.instanceUrl,
         serverUrl: `${config.instanceUrl}/services/Soap/u/${forceComVersion}`,
         version: forceComVersion
       });
-      return getSalesforceIdentity(accessToken, idUrl);
+      return getSalesforceIdentity(accessToken, idUrl, logger);
     })
     .then( res => {
-      console.log('-----> Salesforce org ID', res.organization_id);
-      console.log('-----> Salesforce admin user ID', res.user_id);
-      console.log('-----> Salesforce admin username', res.username);
-      return connection;
+      logger('-----> Salesforce org ID', res.organization_id);
+      logger('-----> Salesforce admin user ID', res.user_id);
+      logger('-----> Salesforce admin username', res.username);
+      return newConnection;
     });
 
 };

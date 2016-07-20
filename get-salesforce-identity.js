@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
-module.exports = function getSalesforceIdentity(accessToken, idUrl) {
-  console.log('-----> Get Salesforce identity');
+module.exports = function getSalesforceIdentity(accessToken, idUrl, logger) {
+  logger('-----> Get Salesforce identity');
   return fetch(idUrl, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -11,11 +11,11 @@ module.exports = function getSalesforceIdentity(accessToken, idUrl) {
     .then( response => {
       const status = response.status;
       if (status >= 300) { throw new Error(`Request status ${status} for ${idUrl}`) }
-      //console.log('       response status', status);
+      //logger('       response status', status);
       return response.json();
     })
     .then( salesforceIdentity => {
-      //console.log('       Identity', salesforceIdentity);
+      //logger('       Identity', salesforceIdentity);
       return salesforceIdentity;
     });
 }
