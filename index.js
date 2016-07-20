@@ -4,7 +4,7 @@ const requireEnvVar = require('./require-env-var');
 const refreshSalesforceAuth = require('./refresh-salesforce-auth');
 const getSalesforceIdentity = require('./get-salesforce-identity');
 
-const configFromUrl = function(url) {
+function configFromUrl(url) {
   const forceComAlmUrl = urlParse(url);
   const forceComAuth = forceComAlmUrl.auth.split(':');
   return {
@@ -15,20 +15,20 @@ const configFromUrl = function(url) {
   };
 };
 
-const urlFromConfig = function(config) {
+function urlFromConfig(config) {
   return `force://${config.clientId}:${config.clientSecret}:${config.refreshToken}@${config.instanceUrl}`
 };
 
-const connection = function() {
+function connection() {
   return connectionFromUrl(requireEnvVar('SALESFORCE_URL'));
 };
 
-const connectionFromUrl = function(url) {
+function connectionFromUrl(url) {
   return connectionFromConfig(configFromUrl(url));
 };
 
 // Return Promise of authenticated jsForce connection.
-const connectionFromConfig = function(config, forceComVersion = '37.0') {
+function connectionFromConfig(config, forceComVersion = '37.0') {
 
   console.log('-----> Force.com connecting', config.instanceUrl);
 
