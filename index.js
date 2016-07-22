@@ -21,7 +21,17 @@ function urlFromConfig(config) {
 };
 
 function connection(forceComVersion) {
-  return connectionFromUrl(requireEnvVar('SALESFORCE_URL'), forceComVersion);
+  return connectionFromConfig(
+    configFromUrl(requireEnvVar('SALESFORCE_URL')),
+    forceComVersion
+  );
+};
+
+function connectionAndIdentity(forceComVersion) {
+  return connectionAndIdentityFromConfig(
+    configFromUrl(requireEnvVar('SALESFORCE_URL')),
+    forceComVersion
+  );
 };
 
 function connectionFromUrl(url, forceComVersion) {
@@ -29,7 +39,13 @@ function connectionFromUrl(url, forceComVersion) {
 };
 
 // Return Promise of authenticated jsForce connection.
-function connectionFromConfig(config, forceComVersion = '37.0') {
+function connectionFromConfig(...args) {
+  return connectionAndIdentityFromConfig(...args)
+    .then( ({ connection }) => connection )
+};
+
+// Return Promise of authenticated jsForce connection & identity.
+function connectionAndIdentityFromConfig(config, forceComVersion = '37.0') {
   const env = process.env;
   let logger;
   if (env.VERBOSE === true || env.VERBOSE === 'true' || env.VERBOSE === '1') {
@@ -62,16 +78,21 @@ function connectionFromConfig(config, forceComVersion = '37.0') {
       logger('-----> Salesforce org ID', res.organization_id);
       logger('-----> Salesforce admin user ID', res.user_id);
       logger('-----> Salesforce admin username', res.username);
-      return newConnection;
+      return {
+        connection: newConnection,
+        identity: res
+      };
     });
 
 };
 
 module.exports = {
   default: connection,
+  connectionAndIdentity,
   configFromUrl,
   connection,
   connectionFromUrl,
   connectionFromConfig,
+  connectionAndIdentityFromConfig,
   urlFromConfig
 };

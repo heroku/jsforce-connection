@@ -27,7 +27,7 @@ See: [jsforce docs](https://jsforce.github.io/document/) for how to use a connec
   * *Must include oAuth client ID, secret, & refresh token*
   * Example: `force://{client-id}:{secret}:{refresh-token}@{instance-name}.salesforce.com`
 
-Example:
+Example to get a connection:
 
 ```javascript
 const createConnection = require('jsforce-connection').default;
@@ -35,6 +35,18 @@ const createConnection = require('jsforce-connection').default;
 createConnection()
   .then( salesforceApi => {
     console.log(`jsforce connected to ${salesforceApi.instanceUrl}`)
+  });
+```
+
+Example to get a connection & user identity info:
+
+```javascript
+const createConnectionAndIdentity = require('jsforce-connection').connectionAndIdentity;
+
+createConnectionAndIdentity()
+  .then( { connection: salesforceApi, identity } => {
+    console.log(`jsforce connected to ${salesforceApi.instanceUrl}`)
+    console.log(`jsforce identity is ${identity.username}`)
   });
 ```
 
@@ -55,6 +67,17 @@ createConnectionFromConfig({
     console.log(`jsforce connected to ${salesforceApi.instanceUrl}`)
   });
 ```
+
+API
+---
+
+* `.connection()`
+  * Get a jsforce Salesforce API [connection](https://jsforce.github.io/document/#connection)
+  * Returns a Promise for the `connection`
+* `.connectionAndIdentity()`
+  * Get a jsforce Salesforce API [connection](https://jsforce.github.io/document/#connection) & [identity](https://jsforce.github.io/document/#identity)
+  * Returns a Promise for `{ connection, identity }`
+
 
 ### Tips & Tricks
 

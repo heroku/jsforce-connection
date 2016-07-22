@@ -53,6 +53,19 @@ test('.connection uses Force.com version parameter', t => {
     })
 })
 
+test('.connectionAndIdentity eventually returns an authenticated Salesforce API connection & identity', t => {
+  t.plan(2)
+
+  process.env.SALESFORCE_URL = 'force://MOCK_CLIENT_ID:MOCK_SECRET:MOCK_REFRESH_TOKEN@naXX.salesforce.com'
+  mockSuccessfulAuth()
+
+  return jsforceConnection.connectionAndIdentity()
+    .then( ({ connection, identity }) => {
+      t.is('https://naxx.salesforce.com', connection.instanceUrl)
+      t.is('dev@scratch-328.org', identity.username)
+    })
+})
+
 
 
 function mockSuccessfulAuth() {
