@@ -11,7 +11,7 @@ Exclusively uses the user account's Salesforce instance URL, e.g. `https://na30.
 Install
 -------
 
-`npm install jsforce-connection --save`
+`npm install jsforce jsforce-connection --save`
 
 Usage
 -----
