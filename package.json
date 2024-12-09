@@ -9,7 +9,7 @@
   "author": "ntblack",
   "license": "MIT",
   "dependencies": {
-    "node-fetch": "1.5.3"
+    "node-fetch": "2.6.7"
   },
   "peerDependencies": {
     "jsforce": "^1.6.0"
